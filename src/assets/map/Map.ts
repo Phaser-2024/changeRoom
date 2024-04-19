@@ -1,11 +1,12 @@
 export default class Map{
     private floor: Phaser.GameObjects.Image;
     private colliders: Phaser.Physics.Arcade.Image[] = [];
+    private border: Phaser.Physics.Arcade.Image[] = [];
     private types: Array<String> = [];
     private arrows: Phaser.GameObjects.Image[] = [];
     private down: boolean;
 
-    
+    private max: integer[] = [];
 
     private Mapx: integer;
     private Mapy: integer;
@@ -17,11 +18,10 @@ export default class Map{
         this.floor = scene.add.image(x, y, texture).setOrigin(0, 0).setScale(3).setDepth(0).setAlpha(1);
     }
 
-    setCollider(scene: Phaser.Scene, x:number, y:number, type: string)
+    setCollider(scene: Phaser.Scene, x:number, y:number)
     {
 
         this.colliders.push(scene.physics.add.image(x, y, "collider").setScale(1).setDepth(1).setAlpha(0));
-        this.types.push(type)
         //this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
 
 
@@ -35,9 +35,10 @@ export default class Map{
         // }
     }
 
-    getCollType()
+    setBorder(R:number, L:number)
     {
-        // return this.collType;
+        this.max[0] = R;
+        this.max[1]  = L;
     }
 
     setArrow(direction: boolean)
@@ -95,6 +96,11 @@ export default class Map{
     getArrows()
     {
         return this.arrows;
+    }
+
+    getMax()
+    {
+        return this.max;
     }
 
 }

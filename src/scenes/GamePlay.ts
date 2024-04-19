@@ -13,6 +13,7 @@ export default class GamePlay extends Phaser.Scene {
 
   private d: Phaser.Input.Keyboard.Key;
   private a: Phaser.Input.Keyboard.Key;
+  private e: Phaser.Input.Keyboard.Key;
 
   private map: Map[] = [];
 
@@ -21,6 +22,10 @@ export default class GamePlay extends Phaser.Scene {
   private overlap: boolean = false;
   private isPressing: boolean = false;
   private up: boolean = true;
+  private border: boolean = false;
+  private maxRight: boolean = false;
+  private maxLeft: boolean = false;
+
 
   private floor: integer = 0;
 
@@ -36,6 +41,7 @@ export default class GamePlay extends Phaser.Scene {
     //movement key
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.e = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
     this.map = [
       new Map(),
@@ -65,6 +71,26 @@ export default class GamePlay extends Phaser.Scene {
     this.Movement();
     this.PlayerAnimations();
 
+    if(Phaser.Input.Keyboard.JustDown(this.e))
+    {
+      console.log(this.map[this.floor].getImage().x, this.map[this.floor].getImage().y)
+    }
+
+    if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[0])
+    {
+      this.maxLeft = true;
+    }
+    else if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[1])
+    {
+      this.maxRight = true;
+    }
+    else
+    {
+      this.maxLeft = false;
+      
+      this.maxRight = false;
+    }
+
     for (var i = 0; i < this.map.length; i++) {
       if (i != this.floor) {
         this.map[i].getImage().setAlpha(0);
@@ -77,40 +103,26 @@ export default class GamePlay extends Phaser.Scene {
       this.ChangeRoom(opt);
     });
 
-    //overlap
-    const colliders = this.map[this.floor].getColliders();
-    colliders.forEach((collider, i) => {
-      if (this.physics.overlap(this.player, collider)) {
-        const types = this.map[this.floor].getTypes();
+    if(this.physics.overlap(this.player, this.map[this.floor].getColliders()))
+    {
+      this.overlap = true;
+      this.events.emit("in", this.player)
+    }
+    else if(this.overlap)
+    {
+      this.overlap = false;
+      this.events.emit("out");
+    }
 
-        if (types[i] === "interaction") {
-          this.overlap = true;
-          this.events.emit("in", this.player);
-        } else if (types[i] === "borderLeft") {
-          this.canMoveBehind = false;
-          this.canMoveBeyond = true;
-        }else if (types[i] === "borderRight") {
-          this.canMoveBeyond = false;
-          this.canMoveBehind= true;
-        }
-      } else if (this.overlap) {
-        this.overlap = false;
-        this.events.emit("out");
-        this.canMoveBehind = true;
-        this.canMoveBeyond = true;
-      } else {
-        // this.canMoveBehind = true;
-        // this.canMoveBeyond = true;
-      }
-    });
+
   }
 
   Movement() {
-    if (this.d.isDown && this.canMoveBeyond) {
+    if (this.d.isDown && !this.maxRight) {
       this.up = true;
       this.map[this.floor].MoveRight(6, 3);
       this.isPressing = true;
-    } else if (this.a.isDown && this.canMoveBehind) {
+    } else if (this.a.isDown && !this.maxLeft) {
       this.up = false;
       this.map[this.floor].MoveLeft(6, 3);
       this.isPressing = true;
@@ -194,21 +206,11 @@ export default class GamePlay extends Phaser.Scene {
       this.scene.scene,
       this.centerX,
       this.centerY + 60,
-      "interaction"
     );
-    this.map[0].setCollider(
-      this.scene.scene,
-      this.centerX - 625,
-      this.centerY + 350,
-      "borderLeft"
-    );
-    this.map[0].setCollider(
-      this.scene.scene,
-      this.centerX + 400,
-      this.centerY - 180,
-      "borderRight"
-    );
+    this.map[0].setBorder(-504,-1584)
 
+
+    /*
     this.map[1].setCollider(
       this.scene.scene,
       this.centerX - 625,
@@ -220,7 +222,7 @@ export default class GamePlay extends Phaser.Scene {
       this.centerX + 400,
       this.centerY - 180,
       "borderRight"
-    );
+    );*/
 
     this.map[1].createMap(this.scene.scene, 0, -48 + 63, "B");
 
