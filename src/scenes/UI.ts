@@ -30,8 +30,8 @@ export default class UI extends Phaser.Scene{
     {
         this.levelMask = this.add.sprite(0, 0, "levelMask").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
 
-        this.changeRoomBox[0].BoxInterract(this.scene.scene, this.centerX-600, this.centerY, 5, 0);
-        this.changeRoomBox[1].BoxInterract(this.scene.scene, this.centerX+600, this.centerY, 5, 0);
+        this.changeRoomBox[0].BoxInterract(this.scene.scene, this.centerX-600, this.centerY, 10, 0);
+        this.changeRoomBox[1].BoxInterract(this.scene.scene, this.centerX+600, this.centerY, 10, 0);
         this.changeRoomBox[0].getDecor().flipY = true;
         
         this.changeRoomBox.forEach(element => {
