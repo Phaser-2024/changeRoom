@@ -34,8 +34,8 @@ export default class UI extends Phaser.Scene{
         this.wallMask[0] = this.add.image(0, 8*3, "wallMaskLeft").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
         this.wallMask[1] = this.add.image(0, 8*3, "wallMaskRight").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
 
-        this.changeRoomBox[0].BoxInterract(this.scene.scene, this.centerX-600, this.centerY, 10, 0);
-        this.changeRoomBox[1].BoxInterract(this.scene.scene, this.centerX+600, this.centerY, 10, 0);
+        this.changeRoomBox[0].BoxInterract(this.scene.scene, this.centerX-600, this.centerY, 5, 0);
+        this.changeRoomBox[1].BoxInterract(this.scene.scene, this.centerX+600, this.centerY, 5, 0);
         this.changeRoomBox[0].getDecor().flipY = true;
         
         this.changeRoomBox.forEach(element => {
@@ -66,6 +66,8 @@ export default class UI extends Phaser.Scene{
 
     ShowBoxes(player: Phaser.Physics.Arcade.Sprite, interactionBox: BoxInterract[])
     {
+
+        
         var box: integer = 0;
 
         if(player.anims.currentAnim.key == "walkLeft" && interactionBox[1].getDecor().alpha == 0)
