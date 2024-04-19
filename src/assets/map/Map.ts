@@ -4,6 +4,8 @@ export default class Map{
     private arrows: Phaser.GameObjects.Image[] = [];
     private down: boolean;
 
+    private collType: string;
+
     private Mapx: integer;
     private Mapy: integer;
 
@@ -14,8 +16,10 @@ export default class Map{
         this.floor = scene.add.image(x, y, texture).setOrigin(0, 0).setScale(3).setDepth(0).setAlpha(1);
     }
 
-    setCollider(scene: Phaser.Scene, x:number, y:number)
+    setCollider(scene: Phaser.Scene, x:number, y:number, type: string)
     {
+        this.collType = type;
+
         this.colliders.push(scene.physics.add.image(x, y, "collider").setScale(1).setDepth(1).setAlpha(0));
         //this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
 
@@ -28,6 +32,11 @@ export default class Map{
         {
             this.arrows.push(scene.add.image(x - 12*3, y - 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(1, 1));
         }
+    }
+
+    getCollType()
+    {
+        return this.collType;
     }
 
     setArrow(direction: boolean)

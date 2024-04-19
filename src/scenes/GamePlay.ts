@@ -72,27 +72,21 @@ export default class GamePlay extends Phaser.Scene {
       }
     }
 
-    this.UI.events.on("selected", () => {
-      console.log("addio")
-      switch (this.floor) {
-        case 0:
-          this.floor = 1;
-          break;
-        case 1:
-          this.floor = 0;
-          break;
-      
-        default:
-          break;
-      }
-    })
+    this.UI.events.on("selected", (opt: integer) => {this.ChangeRoom(opt)})
 
     
     //overlap
     if(this.physics.overlap(this.player, this.map[this.floor].getColliders()))
     {
-      this.overlap = true;
-      this.events.emit("in", this.player);
+      if(this.map[this.floor].getCollType() === "interaction")
+      {
+        this.overlap = true;
+        this.events.emit("in", this.player);
+      }
+      else if(this.map[this.floor].getCollType() === "border")
+      {
+        //cose da fare
+      }
     }
     else if(this.overlap)
     {
@@ -198,7 +192,7 @@ export default class GamePlay extends Phaser.Scene {
   CreateMaps()
   {
     this.map[0].createMap(this.scene.scene, -this.centerX-6, -this.centerY+54, "A");
-    this.map[0].setCollider(this.scene.scene, this.centerX, this.centerY + 60);
+    this.map[0].setCollider(this.scene.scene, this.centerX, this.centerY + 60, "interaction");
 
     this.map[1].createMap(this.scene.scene, 0, -48+63, "B");
 
@@ -215,9 +209,14 @@ export default class GamePlay extends Phaser.Scene {
       element.getArrows().forEach(arr => {arr.setAlpha(0)});
     });
 
-/*
-    this.map[0].setCollider(this.scene.scene, this.map[0].getImage().x + 415*3, this.map[0].getImage().y + 144*3);
-    this.map[1].createMap(this.scene.scene, 0, 0, "B");
-    this.map[0].getImage().setAlpha(0);*/
+  }
+  
+  ChangeRoom(opt: integer)
+  {
+    if(opt == 0)
+    {
+      this.floor = 1;
+    }
   }
 }
+

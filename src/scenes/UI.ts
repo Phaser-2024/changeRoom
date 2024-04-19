@@ -78,11 +78,8 @@ export default class UI extends Phaser.Scene{
             box = 1;
         }
 
-        if(interactionBox[box].selection() == 0)
-        {
-            console.log("ciao")
-            this.events.emit("selected")
-        }
+            this.events.emit("selected", interactionBox[box].selection())
+        
 
     }
 

@@ -72,7 +72,8 @@
     "workbox-webpack-plugin": "^6.6.0"
   },
   "dependencies": {
+    "bootstrap": "^5.3.0",
     "phaser": "^3.70.0",
-    "bootstrap": "^5.3.0"
+    "phaser3": "^0.4.34"
   }
 }
