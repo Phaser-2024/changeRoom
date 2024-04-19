@@ -11,6 +11,7 @@ import Menu from "./scenes/Menu"
 //importiamo GameData che contiene i valori globali del gioco
 import { GameData } from "./GameData";
 import UI from "./scenes/UI";
+import Abramo from "./scenes/Abramo";
 
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata
@@ -40,7 +41,8 @@ window.addEventListener("load", () => {
       Intro,
       GamePlay,
       GameOver, 
-      UI
+      UI,
+      Abramo
     ],
     physics: {
       default: "arcade",

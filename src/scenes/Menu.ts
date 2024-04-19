@@ -81,7 +81,7 @@ export default class Menu extends Phaser.Scene {
       {
         this.scene.stop("Menu");
         this.scene.start("UI").bringToTop;
-        this.scene.start("GamePlay");
+        this.scene.start("Abramo");
 
       })
 

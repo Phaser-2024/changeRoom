@@ -69,7 +69,7 @@ export let GameData: gameData = {
     { name: "arrow", path: "assets/map/arrow.png" },
     
     { name: "isacc", path: "assets/player/isacco.png" },
-    
+    {name: "roomA", path: "assets/map/map_fragment/room/roomA.png"}
   ],
 
   tilemaps: [
