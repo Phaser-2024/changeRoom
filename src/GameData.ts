@@ -51,7 +51,10 @@ export let GameData: gameData = {
     { name: "candleholder", path: "assets/images/Menu/candleholder.png" },
 
     //gameplay
-    { name: "levelMask", path: "assets/map/level_mask.png" },
+    { name: "levelMaskLeft", path: "assets/map/levelLeft_mask.png" },
+    { name: "levelMaskRight", path: "assets/map/levelRight_mask.png" },
+    { name: "wallMaskLeft", path: "assets/map/wallLeft_mask.png" },
+    { name: "wallMaskRight", path: "assets/map/wallRight_mask.png" },
     
     //map
     { name: "A", path: "assets/map/map_fragment/A.png" },

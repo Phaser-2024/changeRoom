@@ -12,7 +12,8 @@ export default class UI extends Phaser.Scene{
     private gamePlay: GamePlay;
 
     private changeRoomBox: BoxInterract[] = [];
-    private levelMask: Phaser.GameObjects.Image;
+    private levelMask: Phaser.GameObjects.Image[] = [];
+    private wallMask : Phaser.GameObjects.Image[] = [];
 
     private e: Phaser.Input.Keyboard.Key; 
 
@@ -28,7 +29,10 @@ export default class UI extends Phaser.Scene{
 
     create()
     {
-        this.levelMask = this.add.sprite(0, 0, "levelMask").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
+        this.levelMask[0] = this.add.image(0, 0, "levelMaskLeft").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
+        this.levelMask[1] = this.add.image(0, 0, "levelMaskRight").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
+        this.wallMask[0] = this.add.image(0, 8*3, "wallMaskLeft").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
+        this.wallMask[1] = this.add.image(0, 8*3, "wallMaskRight").setOrigin(0, 0).setScale(3).setAlpha(1).setDepth(4);
 
         this.changeRoomBox[0].BoxInterract(this.scene.scene, this.centerX-600, this.centerY, 10, 0);
         this.changeRoomBox[1].BoxInterract(this.scene.scene, this.centerX+600, this.centerY, 10, 0);
@@ -46,6 +50,10 @@ export default class UI extends Phaser.Scene{
     {   
         this.gamePlay.events.on("in", (player: Phaser.Physics.Arcade.Sprite) => {this.ShowBoxes(player, this.changeRoomBox)} );
         this.gamePlay.events.on("out", () => {this.HideBoxes(this.changeRoomBox)});
+        this.gamePlay.events.on("hideWall", () => {this.wallMask[1].setAlpha(0)});
+        this.gamePlay.events.on("hideFloor", () => {this.levelMask[1].setAlpha(0); console.log()});
+        this.gamePlay.events.on("showWall", () => {this.wallMask[1].setAlpha(1)});
+        this.gamePlay.events.on("showFloor", () => {this.levelMask[1].setAlpha(1)});
     }
 
     HideBoxes(interactionBox: BoxInterract[])
@@ -78,7 +86,7 @@ export default class UI extends Phaser.Scene{
             box = 1;
         }
 
-            this.events.emit("selected", interactionBox[box].selection())
+        this.events.emit("selected", interactionBox[box].selection())
         
 
     }

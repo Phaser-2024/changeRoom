@@ -22,17 +22,14 @@ export default class GamePlay extends Phaser.Scene {
   private overlap: boolean = false;
   private isPressing: boolean = false;
   private up: boolean = true;
-  private border: boolean = false;
   private maxRight: boolean = false;
   private maxLeft: boolean = false;
+  private mask: boolean = false;
 
 
   private floor: integer = 0;
 
   private UI: UI;
-
-  private canMoveBehind: boolean = true;
-  private canMoveBeyond: boolean = true;
 
   private centerX = 1920 / 2;
   private centerY = 1080 / 2;
@@ -56,10 +53,7 @@ export default class GamePlay extends Phaser.Scene {
   create() {
     this.cameras.main.setBackgroundColor("#000000");
 
-    this.player = this.physics.add
-      .sprite(this.centerX - 96, this.centerY - 24 + 60, "playerSprite")
-      .setScale(3)
-      .setDepth(2);
+    this.player = this.physics.add.sprite(this.centerX - 96, this.centerY - 24 + 60, "playerSprite").setScale(3).setDepth(2);
 
     this.UI = <UI>this.scene.get("UI");
 
@@ -70,31 +64,15 @@ export default class GamePlay extends Phaser.Scene {
   update(time: number, delta: number): void {
     this.Movement();
     this.PlayerAnimations();
-
-    if(Phaser.Input.Keyboard.JustDown(this.e))
-    {
-      console.log(this.map[this.floor].getImage().x, this.map[this.floor].getImage().y)
-    }
-
-    if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[0])
-    {
-      this.maxLeft = true;
-    }
-    else if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[1])
-    {
-      this.maxRight = true;
-    }
-    else
-    {
-      this.maxLeft = false;
-      
-      this.maxRight = false;
-    }
+    this.BorderMask();
 
     for (var i = 0; i < this.map.length; i++) {
-      if (i != this.floor) {
+      if (i != this.floor) 
+      {
         this.map[i].getImage().setAlpha(0);
-      } else {
+      } 
+      else 
+      {
         this.map[i].getImage().setAlpha(1);
       }
     }
@@ -117,12 +95,52 @@ export default class GamePlay extends Phaser.Scene {
 
   }
 
+  BorderMask()
+  {
+    if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[0])
+    {
+      this.maxRight = true;
+    }
+    else if(this.map[this.floor].getImage().x == this.map[this.floor].getMax()[1])
+    {
+      this.maxLeft = true;
+    }
+    else
+    {
+      this.maxLeft = false;
+      this.maxRight = false;
+    }
+
+    if(this.map[this.floor].getImage().x <= this.map[this.floor].getMask()[0])
+    {
+      this.events.emit("hideWall");
+    }
+    else if(this.map[this.floor].getImage().x != this.map[this.floor].getMask()[0])
+    {
+      this.events.emit("showWall");
+    }
+    
+    if(this.map[this.floor].getImage().x <= this.map[this.floor].getMask()[1])
+    {
+      this.events.emit("hideFloor");
+    }
+    else if(this.map[this.floor].getImage().x != this.map[this.floor].getMask()[1])
+    {
+      this.events.emit("showFloor");
+    }
+  }
+
   Movement() {
-    if (this.d.isDown && !this.maxRight) {
+    if(Phaser.Input.Keyboard.JustDown(this.e))
+    {
+       console.log(this.map[this.floor].getImage().x)
+    }
+
+    if (this.d.isDown && !this.maxLeft) {
       this.up = true;
       this.map[this.floor].MoveRight(6, 3);
       this.isPressing = true;
-    } else if (this.a.isDown && !this.maxLeft) {
+    } else if (this.a.isDown && !this.maxRight) {
       this.up = false;
       this.map[this.floor].MoveLeft(6, 3);
       this.isPressing = true;
@@ -196,55 +214,36 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   CreateMaps() {
-    this.map[0].createMap(
-      this.scene.scene,
-      -this.centerX - 6,
-      -this.centerY + 54,
-      "A"
-    );
-    this.map[0].setCollider(
-      this.scene.scene,
-      this.centerX,
-      this.centerY + 60,
-    );
-    this.map[0].setBorder(-504,-1584)
-
-
-    /*
-    this.map[1].setCollider(
-      this.scene.scene,
-      this.centerX - 625,
-      this.centerY + 350,
-      "borderLeft"
-    );
-    this.map[1].setCollider(
-      this.scene.scene,
-      this.centerX + 400,
-      this.centerY - 180,
-      "borderRight"
-    );*/
+    this.map[0].createMap(this.scene.scene,-this.centerX - 6,-this.centerY + 54,"A");
+    this.map[0].setCollider(this.scene.scene,this.centerX,this.centerY + 60);
+    this.map[0].setBorder(-528,-1584, -1248, -1398)
 
     this.map[1].createMap(this.scene.scene, 0, -48 + 63, "B");
+    this.map[1].setCollider(this.scene.scene,0 ,15);
+    this.map[1].setBorder(90,-324)
 
     this.map[2].createMap(this.scene.scene, 0, 0, "C");
+    this.map[2].setCollider(this.scene.scene,0, 0);
+    this.map[2].setCollider(this.scene.scene, -222, 111);
+    this.map[2].setBorder(0,-228)
 
     this.map[3].createMap(this.scene.scene, 0, 0, "D");
+    this.map[3].setCollider(this.scene.scene,-486, 243);
+    this.map[3].setCollider(this.scene.scene,-24, 12);
+    this.map[3].setBorder(-24,-492)
 
     this.map[4].createMap(this.scene.scene, 0, 0, "E");
+    this.map[4].setCollider(this.scene.scene,0 ,0);
+    this.map[4].setBorder(0,-228)
 
     this.map[5].createMap(this.scene.scene, 0, 0, "F");
+    this.map[5].setCollider(this.scene.scene,0 ,0);
+    this.map[5].setBorder(0,-228)
 
-    this.map.forEach((element) => {
-      element.getImage().setAlpha(0);
-      element.getArrows().forEach((arr) => {
-        arr.setAlpha(0);
-      });
-    });
+    
   }
 
   ChangeRoom(opt: integer) {
-    this.canMoveBehind = true;
-    this.canMoveBeyond = true;
     if (opt == 0) {
       this.floor = 1;
     }

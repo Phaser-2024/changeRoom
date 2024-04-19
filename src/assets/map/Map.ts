@@ -2,6 +2,7 @@ export default class Map{
     private floor: Phaser.GameObjects.Image;
     private colliders: Phaser.Physics.Arcade.Image[] = [];
     private border: Phaser.Physics.Arcade.Image[] = [];
+    private mask: integer[] = [];
     private types: Array<String> = [];
     private arrows: Phaser.GameObjects.Image[] = [];
     private down: boolean;
@@ -35,10 +36,18 @@ export default class Map{
         // }
     }
 
-    setBorder(R:number, L:number)
+    setBorder(R:number, L:number, wall?: integer, floor?: integer)
     {
         this.max[0] = R;
         this.max[1]  = L;
+
+        this.mask[0] = wall;
+        this.mask[1] = floor;
+    }
+
+    getMask()
+    {
+        return this.mask;
     }
 
     setArrow(direction: boolean)
