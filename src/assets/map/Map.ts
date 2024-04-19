@@ -1,10 +1,11 @@
 export default class Map{
     private floor: Phaser.GameObjects.Image;
     private colliders: Phaser.Physics.Arcade.Image[] = [];
+    private types: Array<String> = [];
     private arrows: Phaser.GameObjects.Image[] = [];
     private down: boolean;
 
-    private collType: string;
+    
 
     private Mapx: integer;
     private Mapy: integer;
@@ -18,25 +19,25 @@ export default class Map{
 
     setCollider(scene: Phaser.Scene, x:number, y:number, type: string)
     {
-        this.collType = type;
 
         this.colliders.push(scene.physics.add.image(x, y, "collider").setScale(1).setDepth(1).setAlpha(0));
+        this.types.push(type)
         //this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
 
 
-        if(this.down)
-        {
-            this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
-        }
-        else
-        {
-            this.arrows.push(scene.add.image(x - 12*3, y - 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(1, 1));
-        }
+        // if(this.down)
+        // {
+        //     this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
+        // }
+        // else
+        // {
+        //     this.arrows.push(scene.add.image(x - 12*3, y - 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(1, 1));
+        // }
     }
 
     getCollType()
     {
-        return this.collType;
+        // return this.collType;
     }
 
     setArrow(direction: boolean)
@@ -52,10 +53,10 @@ export default class Map{
             element.x -= x;
             element.y += y;
         });  
-        this.arrows.forEach(element => {
-            element.x -= x;
-            element.y += y;
-        }); 
+        // this.arrows.forEach(element => {
+        //     element.x -= x;
+        //     element.y += y;
+        // }); 
     }
 
     MoveLeft(x: number, y: number)
@@ -66,10 +67,10 @@ export default class Map{
             element.x += x;
             element.y -= y;
         });  
-        this.arrows.forEach(element => {
-            element.x += x;
-            element.y -= y;
-        }); 
+        // this.arrows.forEach(element => {
+        //     element.x += x;
+        //     element.y -= y;
+        // }); 
     }
 
     resetPosition()
@@ -80,6 +81,10 @@ export default class Map{
     getColliders()
     {
         return this.colliders;
+    }
+
+    getTypes(){
+        return this.types;
     }
 
     getImage()
