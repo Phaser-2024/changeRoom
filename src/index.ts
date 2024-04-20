@@ -2,16 +2,15 @@
 import "phaser";
 //importiamo le nostre scene
 import Boot from "./scenes/Boot";
-import Hud from "./scenes/Hud";
 import Preloader from "./scenes/Preloader";
 import GamePlay from "./scenes/GamePlay";
-import GameOver from "./scenes/GameOver";
-import Intro from "./scenes/Intro";
 import Menu from "./scenes/Menu"
 //importiamo GameData che contiene i valori globali del gioco
 import { GameData } from "./GameData";
 import UI from "./scenes/UI";
 import Abramo from "./scenes/Abramo";
+import Start from "./scenes/Start";
+import ClockRoom from "./scenes/ClockRoom";
 
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata
@@ -35,14 +34,13 @@ window.addEventListener("load", () => {
 
     scene: [
       Boot,
-      Hud,
       Preloader,
       Menu,
-      Intro,
       GamePlay,
-      GameOver, 
       UI,
-      Abramo
+      Abramo,
+      Start,
+      ClockRoom
     ],
     physics: {
       default: "arcade",

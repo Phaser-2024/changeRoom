@@ -29,6 +29,14 @@ export let GameData: gameData = {
     },
 
     {	
+      name: "playerSpriteStart",
+      path: "assets/player/startAnim.png",
+      width: 64,
+      height: 64,
+      frames: 32
+    },
+
+    {	
       name: "AbramoSprite",
       path: "assets/NPCs/Abramo_n_Isacco/Abramo-sheet.png",
       width: 64,
@@ -51,11 +59,21 @@ export let GameData: gameData = {
     { name: "candleholder", path: "assets/images/Menu/candleholder.png" },
 
     //gameplay
+    //ui
+    { name: "collider", path: "assets/tilemap/coll.png" },
+    { name: "boxInterract", path: "assets/interactiveBox/boxInterr.png" },
+    { name: "decor", path: "assets/interactiveBox/decoration.png" },
+    { name: "arrow", path: "assets/map/arrow.png" },
     { name: "levelMaskLeft", path: "assets/map/levelLeft_mask.png" },
     { name: "levelMaskRight", path: "assets/map/levelRight_mask.png" },
     { name: "wallMaskLeft", path: "assets/map/wallLeft_mask.png" },
     { name: "wallMaskRight", path: "assets/map/wallRight_mask.png" },
-    
+    { name: "gameMask", path: "assets/images/gameMask.png" },
+    { name: "gameMask2", path: "assets/images/gameMask2.png" },
+    { name: "clockMask", path: "assets/map/map_fragment/room/roomClock-_mask.png" },
+    { name: "clock", path: "assets/interactiveBox/clock.png" },
+
+
     //map
     { name: "A", path: "assets/map/map_fragment/A.png" },
     { name: "B", path: "assets/map/map_fragment/B.png" },
@@ -65,14 +83,17 @@ export let GameData: gameData = {
     { name: "F", path: "assets/map/map_fragment/F.png" },
 
 
+
+    //player
     { name: "player", path: "assets/images/player.png" },
-    { name: "collider", path: "assets/tilemap/coll.png" },
-    { name: "boxInterract", path: "assets/interactiveBox/boxInterr.png" },
-    { name: "decor", path: "assets/interactiveBox/decoration.png" },
-    { name: "arrow", path: "assets/map/arrow.png" },
-    
-    { name: "isacc", path: "assets/player/isacco.png" },
-    {name: "roomA", path: "assets/map/map_fragment/room/roomA.png"}
+
+   
+    //NPC n Room
+    { name: "isacc", path: "assets/NPCs/Abramo_n_Isacco/isacco.png" },
+    {name: "roomA", path: "assets/map/map_fragment/room/roomA2.png"},
+    {name: "roomA2", path: "assets/map/map_fragment/room/roomA.png"},
+    {name: "roomClock", path: "assets/map/map_fragment/room/roomClock.png"},
+    {name: "roomClock-solved", path: "assets/map/map_fragment/room/roomClock_solved.png"}
   ],
 
   tilemaps: [

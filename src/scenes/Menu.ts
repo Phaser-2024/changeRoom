@@ -13,10 +13,13 @@ export default class Menu extends Phaser.Scene {
     private menuText : Phaser.GameObjects.Text[] = [null];
 
     preload() 
-    { }
+    { 
+      
+    }
 
     create() 
     {
+
       const centerX = this.game.canvas.width/2;
       const centerY = this.game.canvas.height/2;
 
@@ -80,8 +83,10 @@ export default class Menu extends Phaser.Scene {
       start.on("pointerdown", () =>
       {
         this.scene.stop("Menu");
-        this.scene.start("UI").bringToTop;
-        this.scene.start("Abramo");
+        //this.scene.start("GamePlay").moveBelow("UI", "GamePlay");
+        //this.scene.start("Abramo").moveBelow("UI", "Abramo");
+        //this.scene.start("Start").moveBelow("UI", "Start");
+        this.scene.start("ClockRoom").moveBelow("UI", "ClockRoom");
 
       })
 

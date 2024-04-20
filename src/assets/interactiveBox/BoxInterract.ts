@@ -134,10 +134,15 @@ export default class BoxInterract{
 
         if(Phaser.Input.Keyboard.JustDown(this.e))
         {
-            return this.selector;
+            this.scene.events.emit("selected", this.getSelection());
         }
 
         this.selectorBox.setPosition(this.container.x, this.options[this.selector].y)
+    }
+
+    getSelectorBox()
+    {
+        return this.selectorBox;
     }
 
 

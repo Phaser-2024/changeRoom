@@ -12,16 +12,18 @@ export default class Map{
     private Mapx: integer;
     private Mapy: integer;
 
+    private tag: string;
+
     createMap(scene: Phaser.Scene, x: number, y: number, texture: string)
     {
         this.Mapx = x;
         this.Mapy = y;
         this.floor = scene.add.image(x, y, texture).setOrigin(0, 0).setScale(3).setDepth(0).setAlpha(1);
+        this.tag = texture;
     }
 
     setCollider(scene: Phaser.Scene, x:number, y:number)
     {
-
         this.colliders.push(scene.physics.add.image(x, y, "collider").setScale(1).setDepth(1).setAlpha(0));
         //this.arrows.push(scene.add.image(x + 12*3, y + 12*3, "arrow").setScale(3).setDepth(this.floor.depth).setOrigin(0, 0));
 
@@ -53,6 +55,11 @@ export default class Map{
     setArrow(direction: boolean)
     {
         this.down = direction;
+    }
+
+    setTag(tag: string)
+    {
+        this.tag = tag;
     }
 
     MoveRight(x: number, y: number)

@@ -4,7 +4,7 @@ import { GameData } from "../GameData";
 import Map from "../assets/map/Map";
 import UI from "./UI";
 
-export default class GamePlay extends Phaser.Scene {
+export default class Abramo extends Phaser.Scene {
   constructor() {
     super({
       key: "Abramo",
@@ -15,6 +15,7 @@ export default class GamePlay extends Phaser.Scene {
   private a: Phaser.Input.Keyboard.Key;
   private w: Phaser.Input.Keyboard.Key;
   private s: Phaser.Input.Keyboard.Key;
+  private e: Phaser.Input.Keyboard.Key;
 
   private map: Map[] = [];
   private levelMask: Phaser.GameObjects.Image;
@@ -23,12 +24,14 @@ export default class GamePlay extends Phaser.Scene {
 
   private player: Phaser.Physics.Arcade.Sprite;
   private abramo: Phaser.Physics.Arcade.Sprite;
+  private isacco: Phaser.GameObjects.Image;
 
   private canPlayerMove: Boolean = true;
   private canAbramoMove: Boolean = true;
 
   private overlap: boolean = false;
   private isPressing: boolean = false;
+  private up: boolean = true;
 
   private centerX = 1920 / 2;
   private centerY = 1080 / 2;
@@ -49,42 +52,37 @@ export default class GamePlay extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.e = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
     this.map = [new Map(), new Map(), new Map()];
   }
 
   create() {
+    this.events.emit("start");
     this.cameras.main.setBackgroundColor("#000000");
 
+    this.isacco = this.add.image(1075, 475, "isacc").setScale(3).setDepth(1);
+
     this.player = this.physics.add
-      .sprite(this.centerX - 96, this.centerY - 24, "playerSprite")
+      .sprite(752 ,634, "playerSprite")
       .setScale(3)
-      .setDepth(2);
+      .setDepth(3);
 
     this.CreateAnimation();
 
     this.rectangle = this.add
-      .image(this.centerX, this.centerY, "roomA").setScale(3)
-    //   .setStrokeStyle(3, 0xffffff);
-    this.player.setCollideWorldBounds(true);
-    // this.physics.world.setBounds(
-    //   this.rectangle.x - this.rectangle.width / 2,
-    //   this.rectangle.y - this.rectangle.height / 2,
-    //   this.rectangle.width,
-    //   this.rectangle.height
-    // );
-    this.physics.add.collider(this.player, null, null, null, this);
+      .image(this.centerX, this.centerY, "roomA").setScale(3);
 
     //abramo
     this.abramo = this.physics.add
-      .sprite(this.centerX + 200, this.centerY - 150, "AbramoSprite")
+      .sprite(950,450, "AbramoSprite")
       .setScale(3)
       .setDepth(2)
       .setFrame(0);
 
     this.triggerArea = this.physics.add
-      .image(this.centerX + (this.centerX * 35) / 100, this.centerY, "coll")
-      .setScale(17)
+      .image(this.centerX+100 , this.centerY-100, "coll")
+      .setScale(6)
       .setAlpha(0);
     this.physics.add.collider(this.triggerArea, null, null, null, this);
 
@@ -106,7 +104,7 @@ export default class GamePlay extends Phaser.Scene {
       "Hai delle prove?",
       "Ho sentito delle voci, aveva detto che sarebbe intervenuto",
       "E dov'è quest'essere supremo adesso?",
-      "Io.... Non......",
+      "Io... N-non...",
     ];
 
     this.dialogGroup = this.add.group();
@@ -145,12 +143,20 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
+
+    if(Phaser.Input.Keyboard.JustDown(this.e))
+      {
+         console.log(this.player.x, this.player.y)
+      }
+
+
     this.Movement();
     this.PlayerAnimations();
 
     if (this.physics.overlap(this.player, this.triggerArea)) {
       this.overlap = true;
 
+      this.events.emit("dialogue", this.number);
       this.dialogo();
       this.triggerArea.destroy();
     }
@@ -158,29 +164,47 @@ export default class GamePlay extends Phaser.Scene {
     if (this.canPlayerMove) {
       this.abramoMovement();
     }
+    
   }
 
   Movement() {
     if (this.canPlayerMove) {
       if (this.d.isDown) {
-        this.player.x += 6;
-        this.player.y -= 3;
+        this.player.x += 2;
+        this.player.y -= 1;
         this.isPressing = true;
+        this.player.flipX = false;
+        this.up = true;
       } else if (this.a.isDown) {
-        this.player.x -= 6;
-        this.player.y += 3;
+        this.player.x -= 2;
+        this.player.y += 1;
         this.isPressing = true;
+        this.player.flipX = false;
+        this.up = false;
       } else if (this.w.isDown) {
-        this.player.x -= 6;
-        this.player.y -= 3;
+        this.player.x -= 2;
+        this.player.y -= 1;
         this.isPressing = true;
+        this.player.flipX = true;
+        this.up = true;
       } else if (this.s.isDown) {
-        this.player.x += 6;
-        this.player.y += 3;
+        this.player.x += 2;
+        this.player.y += 1;
         this.isPressing = true;
+        this.player.flipX = true;
+        this.up = false;
       } else {
         this.isPressing = false;
       }
+    }
+
+    if(this.player.x < this.abramo.x || this.player.y > this.abramo.y)
+    {
+      this.player.setDepth(this.abramo.depth+1)
+    }
+    else
+    {
+      this.player.setDepth(this.abramo.depth-1)
     }
   }
 
@@ -189,9 +213,9 @@ export default class GamePlay extends Phaser.Scene {
       this.anims.create({
         key: "walkRight",
         frames: this.anims.generateFrameNumbers("playerSprite", {
-          frames: [0, 1, 2, 3, 4, 5],
+          frames: [1, 2, 3, 4, 5, 6],
         }),
-        frameRate: 6,
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
@@ -202,7 +226,7 @@ export default class GamePlay extends Phaser.Scene {
         frames: this.anims.generateFrameNumbers("AbramoSprite", {
           frames: [1, 2, 3, 4, 5, 6],
         }),
-        frameRate: 6,
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
@@ -212,9 +236,9 @@ export default class GamePlay extends Phaser.Scene {
       this.anims.create({
         key: "walkLeft",
         frames: this.anims.generateFrameNumbers("playerSprite", {
-          frames: [6, 7, 8, 9, 10, 11],
+          frames: [8, 9, 10, 11, 12, 13],
         }),
-        frameRate: 6,
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
@@ -226,7 +250,7 @@ export default class GamePlay extends Phaser.Scene {
         frames: this.anims.generateFrameNumbers("AbramoSprite", {
           frames: [8, 9, 10, 11, 12, 13],
         }),
-        frameRate: 6,
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
@@ -236,21 +260,33 @@ export default class GamePlay extends Phaser.Scene {
       this.anims.create({
         key: "walkUp",
         frames: this.anims.generateFrameNumbers("playerSprite", {
-          frames: [0, 1, 2, 3, 4, 5],
+          frames: [1, 2, 3, 4, 5, 6],
         }),
-        frameRate: 6,
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
     }
 
-    if (!this.anims.exists("idle")) {
+    if (!this.anims.exists("idleUp")) {
       this.anims.create({
-        key: "idle",
+        key: "idleUp",
         frames: this.anims.generateFrameNumbers("playerSprite", {
-          frames: [5],
+          frames: [0],
         }),
-        frameRate: 6,
+        frameRate: 4,
+        yoyo: false,
+        repeat: -1,
+      });
+    }
+
+    if (!this.anims.exists("idleDown")) {
+      this.anims.create({
+        key: "idleDown",
+        frames: this.anims.generateFrameNumbers("playerSprite", {
+          frames: [7],
+        }),
+        frameRate: 4,
         yoyo: false,
         repeat: -1,
       });
@@ -260,42 +296,43 @@ export default class GamePlay extends Phaser.Scene {
   PlayerAnimations() {
     if (this.isPressing && this.canPlayerMove) {
       if (this.d.isDown) {
-        this.player.flipX = false;
         this.player.play("walkRight", true);
       } else if (this.a.isDown) {
-        this.player.flipX = false;
         this.player.play("walkLeft", true);
       } else if(this.w.isDown){
         this.player.play("walkRight", true);
-        this.player.flipX = true;
       } else if(this.s.isDown){
         this.player.play("walkLeft", true);
-        this.player.flipX = true;
       }
-    } else {
-      this.player.play("idle", true);
+    } else if (this.up) {
+      this.player.play("idleUp", true);
+    } else if (!this.up) {
+      this.player.play("idleDown", true);
     }
   }
 
   abramoMovement() {
-    if (this.abramo.x < 1400 && this.canAbramoMove) {
-      this.abramo.x += 1.8;
-      this.abramo.y += 0.9;
+    if (this.abramo.x < 1150 && this.canAbramoMove) {
+      this.abramo.x += 1;
+      this.abramo.y += .5;
       this.abramo.flipX = true;
       this.abramo.play("walkLeftAbramo", true)
       this.canAbramoMove = true;
-    } else if (this.abramo.x > 1000) {
-      this.abramo.x -= 1.8;
-      this.abramo.y -= 0.9;
+    } else if (this.abramo.x >875) {
+      this.abramo.x -= 1;
+      this.abramo.y -= .5;
       this.abramo.play("walkRightAbramo", true)
       this.abramo.flipX = true;
       this.canAbramoMove = false;
-    } else if (this.abramo.x < 1000) {
+    } else if (this.abramo.x < 1001) {
       this.canAbramoMove = true;
     }
+
+    
   }
 
   dialogo() {
+
     this.canPlayerMove = false;
     this.abramo.flipX = false;
     this.abramo.setFrame(7);
@@ -306,6 +343,7 @@ export default class GamePlay extends Phaser.Scene {
   //-----------------------------------------------
   //--- DIALOGHI ---
   startDialog(text: string) {
+    this.events.emit("dialogue", this.number)
     // Mostra il testo nella casella di dialogo
     this.fullText = text;
     this.index = 0;
@@ -338,6 +376,8 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   advanceDialog() {
+    
+    this.events.emit("dialogue", this.number);
     // Avanza nel dialogo o chiude la casella di dialogo se è l'ultimo messaggio
     if (
       this.fullText === this.testo_dialogo[this.number] &&
@@ -348,6 +388,7 @@ export default class GamePlay extends Phaser.Scene {
     } else {
       this.dialogText.setText("");
       this.dialogGroup.destroy();
+      this.events.emit("hide");
       this.dialogBox.destroy(); //rimuovere il box quando è finito
       this.canPlayerMove = true;
     }
